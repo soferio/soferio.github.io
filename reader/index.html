@@ -5,266 +5,449 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Soferio Reader: link to the exact spot in a PDF</title>
 <meta name="description" content="Soferio Reader is a PDF reader for Mac, iPhone and iPad that makes links to an exact spot on a page. Click the link later and the PDF opens right there.">
+<meta name="theme-color" content="#060b18">
+<link rel="icon" href="images/app-icon.png">
+<link rel="apple-touch-icon" href="images/app-icon.png">
 <style>
   :root {
-    --text: #1d1d1f; --muted: #6e6e73; --page: #ffffff; --panel: #f5f5f7; --line: #d2d2d7;
-    --accent: #0a6cdf; --accent-soft: #dcebff; --orange: #ff9500; --paper: #ffffff; --ink: #c7c7cc;
+    --bg: #f6f7fb; --surface: #ffffff; --surface-2: #eef1f7; --text: #11141c; --muted: #5b6273; --line: #dde2ec;
+    --accent: #2f7bff; --accent-2: #7b5cff; --accent-soft: rgba(47, 123, 255, 0.12); --flash: #ff9f0a;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 12px 32px rgba(16, 24, 40, 0.08);
+    --radius: 22px;
+    --serif: "New York", ui-serif, "Iowan Old Style", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --text: #f5f5f7; --muted: #a1a1a6; --page: #161617; --panel: #232325; --line: #3a3a3c;
-      --accent: #4da3ff; --accent-soft: #1d3554; --paper: #f2f2f4; --ink: #b9b9be;
+      --bg: #0a0d16; --surface: #121725; --surface-2: #192032; --text: #eef1f7; --muted: #9aa3b8; --line: #232b3d;
+      --accent: #5b9bff; --accent-soft: rgba(91, 155, 255, 0.14);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px rgba(0, 0, 0, 0.35);
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: var(--text); background: var(--page); }
-  a { color: var(--accent); }
-  .wrap { max-width: 62em; margin: 0 auto; padding: 0 1.2em; }
-  header { padding: 3.2em 0 2.2em; text-align: center; }
-  h1 { font-size: 2.5em; line-height: 1.12; margin: 0 0 0.35em; letter-spacing: -0.01em; }
-  .lead { font-size: 1.25em; color: var(--muted); max-width: 34em; margin: 0 auto 1.4em; }
-  .badge { display: inline-block; padding: 0.55em 1.2em; border-radius: 2em; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; }
-  .platforms { color: var(--muted); font-size: 0.95em; margin-top: 0.9em; }
-  section { padding: 2.6em 0; border-top: 1px solid var(--line); }
-  h2 { font-size: 1.65em; line-height: 1.2; margin: 0 0 0.5em; }
-  h3 { font-size: 1.08em; margin: 0 0 0.25em; }
-  p { margin: 0 0 1em; }
-  .muted { color: var(--muted); }
-  figure { margin: 1.4em 0 0; }
-  figcaption { color: var(--muted); font-size: 0.92em; text-align: center; margin-top: 0.6em; }
-  .diagram { background: var(--panel); border-radius: 16px; padding: 1.2em; }
-  .diagram svg { display: block; width: 100%; height: auto; }
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2em; margin-top: 1.4em; }
-  .step { background: var(--panel); border-radius: 14px; padding: 1.1em 1.2em; }
-  .step .n { display: inline-block; width: 1.7em; height: 1.7em; line-height: 1.7em; border-radius: 50%; background: var(--accent); color: #fff; text-align: center; font-weight: 700; margin-bottom: 0.5em; }
-  .step p { margin: 0; color: var(--muted); }
-  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4em; margin-top: 1.6em; align-items: start; }
-  .shots img { width: 100%; height: auto; border-radius: 22px; border: 1px solid var(--line); display: block; }
-  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2em 2.2em; margin-top: 1.2em; }
-  .features p { color: var(--muted); margin: 0; }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2em; align-items: center; }
-  .two.top { align-items: start; }
-  ul.plain { margin: 0; padding-left: 1.2em; }
-  ul.plain li { margin-bottom: 0.45em; }
-  footer { border-top: 1px solid var(--line); padding: 2em 0 3em; color: var(--muted); font-size: 0.95em; text-align: center; }
-  footer a { margin: 0 0.6em; }
-  @media (max-width: 46em) {
-    h1 { font-size: 1.9em; }
-    .steps, .features, .two { grid-template-columns: 1fr; }
-    .shots { grid-template-columns: 1fr; max-width: 20em; margin-left: auto; margin-right: auto; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { width: min(1160px, 100% - 40px); margin-inline: auto; }
+  h1, h2, h3 { line-height: 1.12; letter-spacing: -0.02em; margin: 0; }
+  h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; }
+  h3 { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  .lead { font-size: clamp(18px, 2vw, 21px); color: var(--muted); max-width: 40em; margin: 18px 0 0; }
+  section { padding: clamp(72px, 10vw, 128px) 0; }
+  .center { text-align: center; }
+  .center .lead { margin-inline: auto; }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; color: #f2f5fb; background: radial-gradient(1200px 600px at 78% 10%, rgba(80, 120, 255, 0.35), transparent 60%),
+      radial-gradient(900px 520px at 8% 90%, rgba(123, 92, 255, 0.28), transparent 60%), linear-gradient(180deg, #060b18 0%, #0a1024 60%, #0b1020 100%);
+    padding: 28px 0 clamp(64px, 9vw, 120px); }
+  .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 56px 56px; mask-image: radial-gradient(ellipse at 60% 30%, black 20%, transparent 70%); }
+  .nav { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; color: #fff; font-family: var(--serif); font-size: 22px; }
+  .brand img { width: 40px; height: 40px; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+  .brand b { font-weight: 600; }
+  .nav nav { display: flex; gap: 26px; font-size: 15px; }
+  .nav nav a { color: rgba(255,255,255,0.78); }
+  .nav nav a:hover { color: #fff; text-decoration: none; }
+  .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; margin-top: clamp(48px, 7vw, 88px); }
+  .hero h1 { font-size: clamp(40px, 6.2vw, 72px); font-weight: 750; letter-spacing: -0.035em; }
+  .hero h1 .grad { background: linear-gradient(90deg, #8fb6ff, #c3a6ff 55%, #ffc46b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .lead { color: rgba(232, 238, 250, 0.78); }
+  .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 34px; }
+  .badge { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; background: #fff; color: #0b1020; font-weight: 650; font-size: 16px; box-shadow: 0 10px 30px rgba(47,123,255,0.35); }
+  .badge small { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #5b6273; text-transform: uppercase; }
+  .ghost { padding: 14px 20px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); color: #fff; font-weight: 600; }
+  .ghost:hover { background: rgba(255,255,255,0.08); text-decoration: none; }
+  .works { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .works li { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 14px; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14); color: rgba(232,238,250,0.82); font-size: 15px; backdrop-filter: blur(8px); }
+  .works li b { color: #fff; font-weight: 650; margin-right: 4px; }
+  .works svg { width: 20px; height: 20px; flex: none; color: #8fb6ff; }
+  .platforms { margin-top: 22px; font-size: 14px; color: rgba(232,238,250,0.6); letter-spacing: 0.02em; }
+
+  .devices { position: relative; height: clamp(420px, 46vw, 600px); }
+  .device { position: absolute; background: #0d0f14; padding: 9px; box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.06); }
+  .device img { width: 100%; height: auto; }
+  .ipad { width: 78%; border-radius: 30px; right: 0; top: 0; transform: rotate(4deg); }
+  .ipad img { border-radius: 22px; }
+  .iphone { width: 38%; border-radius: 40px; left: 4%; bottom: -6%; transform: rotate(-6deg); animation: drift 9s ease-in-out infinite; }
+  .iphone img { border-radius: 32px; }
+  .glow { position: absolute; inset: 20% 10% 10% 20%; background: radial-gradient(closest-side, rgba(47,123,255,0.55), transparent); filter: blur(40px); }
+  @keyframes drift { 0%, 100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(-5deg) translateY(-14px); } }
+
+  /* Demo */
+  .demo { margin-top: 48px; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); padding: clamp(18px, 3vw, 34px); }
+  .stage { display: grid; grid-template-columns: 1fr auto 0.8fr auto 1fr; align-items: center; gap: 14px; }
+  .pane { position: relative; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; height: 300px; overflow: hidden; }
+  .pane-title { position: absolute; top: 0; left: 0; right: 0; height: 34px; display: flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); background: var(--surface); z-index: 3; }
+  .dots i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--line); margin-right: 4px; }
+  .page { position: absolute; left: 18px; right: 18px; top: 50px; padding: 18px; background: #fff; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  .page .h { height: 10px; width: 46%; background: #c9ced9; border-radius: 4px; margin: 4px 0 14px; }
+  .page .l { height: 7px; background: #e1e5ec; border-radius: 4px; margin: 9px 0; }
+  .page .l.s { width: 62%; }
+  .page .gap { height: 14px; }
+  .sel { position: absolute; left: 12px; top: 74px; width: 0; height: 0; border: 2.5px solid var(--accent); border-radius: 8px; background: var(--accent-soft); opacity: 0; }
+  .cursor { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: rgba(17,20,28,0.55); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); left: 22px; top: 120px; opacity: 0; z-index: 4; }
+  .pill { position: absolute; left: 50%; bottom: 18px; transform: translate(-50%, 12px); padding: 8px 14px; border-radius: 999px; background: #11141c; color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; opacity: 0; z-index: 4; box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+  .pill::before { content: "\2713"; margin-right: 6px; color: #5fd38a; }
+  .note { position: absolute; inset: 50px 16px 16px; }
+  .note p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--text); }
+  .note .muted { color: var(--muted); font-size: 12.5px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); font-size: 12.5px; font-weight: 600; opacity: 0; transform: translateY(8px); position: relative; }
+  .chip svg { width: 14px; height: 14px; }
+  .tap { position: absolute; left: 30px; top: 6px; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; }
+  .viewport { position: absolute; inset: 34px 0 0; overflow: hidden; }
+  .scroller { position: absolute; left: 18px; right: 18px; top: 16px; }
+  .scroller .page { position: relative; left: 0; right: 0; top: 0; margin-bottom: 14px; }
+  .flash { position: absolute; left: 10px; right: 10px; height: 44px; border-radius: 8px; background: var(--flash); opacity: 0; mix-blend-mode: multiply; }
+  .arrow { color: var(--muted); }
+  .arrow svg { width: 34px; height: 34px; }
+  .captions { display: grid; grid-template-columns: 1fr auto 0.8fr auto 1fr; gap: 14px; margin-top: 16px; text-align: center; font-size: 14.5px; color: var(--muted); }
+  .captions b { display: block; color: var(--text); font-size: 16px; margin-bottom: 2px; }
+  .captions span.sp { width: 34px; }
+
+  .anim .sel { animation: sel 9s infinite; }
+  .anim .cursor { animation: cur 9s infinite; }
+  .anim .pill { animation: pill 9s infinite; }
+  .anim .chip { animation: chip 9s infinite; }
+  .anim .tap { animation: tap 9s infinite; }
+  .anim .scroller { animation: scroll 9s infinite; }
+  .anim .flash { animation: flash 9s infinite; }
+  @keyframes cur { 0%, 6% { opacity: 0; left: 22px; top: 120px; } 9% { opacity: 1; left: 22px; top: 120px; } 22% { opacity: 1; left: 86%; top: 186px; } 26%, 100% { opacity: 0; left: 86%; top: 186px; } }
+  @keyframes sel { 0%, 8% { opacity: 0; width: 0; height: 0; } 9% { opacity: 1; width: 0; height: 0; } 22% { width: calc(100% - 24px); height: 80px; opacity: 1; } 86% { width: calc(100% - 24px); height: 80px; opacity: 1; } 92%, 100% { width: calc(100% - 24px); height: 80px; opacity: 0; } }
+  @keyframes pill { 0%, 24% { opacity: 0; transform: translate(-50%, 12px); } 28%, 40% { opacity: 1; transform: translate(-50%, 0); } 44%, 100% { opacity: 0; transform: translate(-50%, 0); } }
+  @keyframes chip { 0%, 36% { opacity: 0; transform: translateY(8px); } 42%, 88% { opacity: 1; transform: translateY(0); } 94%, 100% { opacity: 0; transform: translateY(0); } }
+  @keyframes tap { 0%, 50% { opacity: 0; transform: scale(0.4); } 52% { opacity: 1; transform: scale(0.5); } 58%, 100% { opacity: 0; transform: scale(1.6); } }
+  @keyframes scroll { 0%, 58% { transform: translateY(0); } 70%, 92% { transform: translateY(-182px); } 100% { transform: translateY(0); } }
+  @keyframes flash { 0%, 70% { opacity: 0; } 73% { opacity: 0.62; } 90%, 100% { opacity: 0; } }
+
+  /* Still frames when the visitor prefers less motion, or before scripts run. */
+  .still .sel { opacity: 1; width: calc(100% - 24px); height: 80px; }
+  .still .pill { opacity: 1; transform: translate(-50%, 0); }
+  .still .chip { opacity: 1; transform: none; }
+  .still .scroller { transform: translateY(-182px); }
+  .still .flash { opacity: 0.4; }
+
+  /* Steps and cards */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 48px; counter-reset: step; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+  .step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-weight: 700; }
+  .card p { margin: 10px 0 0; color: var(--muted); font-size: 16px; }
+
+  /* Google Drive */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .ticks { list-style: none; padding: 0; margin: 26px 0 0; display: grid; gap: 12px; }
+  .ticks li { position: relative; padding-left: 34px; color: var(--muted); }
+  .ticks li::before { content: ""; position: absolute; left: 0; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft);
+    -webkit-mask: none; box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .ticks li::after { content: ""; position: absolute; left: 7px; top: 8px; width: 7px; height: 11px; border: solid var(--accent); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
+  .diagram { width: 100%; height: auto; }
+  .diagram .ln { stroke: var(--accent); stroke-width: 3; fill: none; stroke-dasharray: 2 10; stroke-linecap: round; }
+  .anim .diagram .ln { animation: dash 2.4s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -24; } }
+  .diagram .dev { fill: var(--surface); stroke: var(--text); stroke-width: 2.5; }
+  .diagram .lbl { fill: var(--muted); font: 600 15px var(--sans); }
+  .diagram .chipbg { fill: var(--accent); }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 48px; align-items: end; }
+  .shot { margin: 0; }
+  .shot img { border-radius: 26px; box-shadow: var(--shadow); border: 1px solid var(--line); background: #fff; }
+  .shot figcaption { margin-top: 12px; font-size: 14.5px; color: var(--muted); text-align: center; }
+  .ipad-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 22px; }
+  .ipad-row img { border-radius: 18px; }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 48px; }
+  .ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-bottom: 18px; }
+  .ico svg { width: 24px; height: 24px; }
+
+  /* Privacy and pricing */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .dark-card { background: linear-gradient(160deg, #0b1124, #121a36); color: #eef1f7; border: none; }
+  .dark-card p { color: rgba(238,241,247,0.72); }
+  .dark-card a { color: #8fb6ff; }
+  .price { display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+  .price div { flex: 1 1 140px; padding: 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+  .price b { display: block; font-size: 20px; }
+  .price span { color: var(--muted); font-size: 14px; }
+
+  footer { border-top: 1px solid var(--line); padding: 40px 0 56px; color: var(--muted); font-size: 14.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: center; justify-content: space-between; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 22px; }
+  footer .brand { color: var(--text); font-size: 18px; }
+  footer .brand img { width: 30px; height: 30px; border-radius: 8px; box-shadow: none; }
+
+  /* Reveal on scroll, only where scripts run and motion is welcome. */
+  .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .js .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .iphone { animation: none; }
+    html { scroll-behavior: auto; }
   }
-  /* Drawing colours */
-  .paper { fill: var(--paper); stroke: var(--line); }
-  .textline { fill: var(--ink); }
-  .note { fill: var(--page); stroke: var(--line); }
-  .accent-fill { fill: var(--accent); }
-  .accent-soft { fill: var(--accent-soft); }
-  .accent-stroke { stroke: var(--accent); fill: none; }
-  .label { fill: var(--text); font: 600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
-  .sub { fill: var(--muted); font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
-  .chip { fill: #fff; font: 600 11px ui-monospace, Menlo, monospace; }
-  .device { fill: none; stroke: var(--text); stroke-width: 2; }
+
+  @media (max-width: 920px) {
+    .hero-grid, .split, .duo { grid-template-columns: 1fr; }
+    .devices { height: 560px; max-width: 520px; margin: 10px auto 0; width: 100%; }
+    .steps, .features { grid-template-columns: 1fr 1fr; }
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    .stage { grid-template-columns: 1fr; }
+    .stage .arrow { transform: rotate(90deg); justify-self: center; }
+    .captions { display: none; }
+    .pane-caption { display: block !important; }
+    .nav nav { display: none; }
+  }
+  @media (max-width: 560px) {
+    .steps, .features, .ipad-row { grid-template-columns: 1fr; }
+    .devices { height: 440px; }
+    .wrap { width: calc(100% - 32px); }
+  }
+  .pane-caption { display: none; text-align: center; font-size: 14.5px; color: var(--muted); margin: 10px 0 4px; }
+  .pane-caption b { color: var(--text); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
 </head>
 <body>
 
-<header>
-<div class="wrap">
-  <h1>Link to the exact spot in a PDF</h1>
-  <p class="lead">Soferio Reader is a PDF reader that makes a link to any part of a page. Paste the link into your
-  notes or a document. Click it later, and the PDF opens right there.</p>
-  <!-- When the app is on the App Store, replace the next line with a link to its App Store page. -->
-  <span class="badge">Coming soon to the App Store</span>
-  <p class="platforms">For Mac, iPhone and iPad</p>
-</div>
+<header class="hero">
+  <div class="wrap">
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="Soferio Reader"><img src="images/app-icon.png" alt="" width="40" height="40"><span>Soferio <b>Reader</b></span></a>
+      <nav aria-label="Sections">
+        <a href="#demo">How it works</a>
+        <a href="#drive">Google Drive</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+    </div>
+
+    <div class="hero-grid" id="top">
+      <div>
+        <p class="eyebrow" style="color:#8fb6ff">PDF reader for Mac, iPhone and iPad</p>
+        <h1>Link to the <span class="grad">exact spot</span> in a PDF.</h1>
+        <p class="lead">Draw a box around a clause, a table or a figure. Soferio Reader copies a link to it. Click that link later, from your notes, an email or another PDF, and the document opens right there, with the spot lit up.</p>
+        <ul class="works" aria-label="Works with">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span><b>Mac</b> Files on your Mac, and Google Drive files</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg><span><b>iPhone and iPad</b> Google Drive files</span></li>
+        </ul>
+        <div class="cta">
+          <span class="badge" role="note"><span><small>Coming soon</small>to the App Store</span></span>
+          <a class="ghost" href="#demo">See how it works</a>
+        </div>
+        <p class="platforms">One subscription for your Mac, iPhone and iPad</p>
+      </div>
+      <div class="devices" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="device ipad"><img src="images/ipad-2-pages.jpg" alt="" width="1200" height="1600"></div>
+        <div class="device iphone"><img src="images/iphone-1-get-link.jpg" alt="" width="644" height="1400"></div>
+      </div>
+    </div>
+  </div>
 </header>
 
-<section>
-<div class="wrap">
-  <h2>How it works</h2>
-  <p class="muted">A link in Soferio Reader does not just open a file. It opens the file at the page, and shows you the
-  passage.</p>
+<main>
 
-  <figure class="diagram" role="img" aria-label="Three steps: drag a box around part of a page, paste the link into your notes, and click it to open the PDF at that spot.">
-  <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-        <path d="M0 0 L10 5 L0 10 z" class="accent-fill"/>
-      </marker>
-    </defs>
-
-    <!-- 1: a page with a box dragged on it -->
-    <rect class="paper" x="30" y="20" width="150" height="190" rx="6"/>
-    <g class="textline">
-      <rect x="46" y="40" width="118" height="5" rx="2"/><rect x="46" y="54" width="118" height="5" rx="2"/>
-      <rect x="46" y="68" width="80" height="5" rx="2"/><rect x="46" y="96" width="118" height="5" rx="2"/>
-      <rect x="46" y="110" width="118" height="5" rx="2"/><rect x="46" y="124" width="96" height="5" rx="2"/>
-      <rect x="46" y="152" width="118" height="5" rx="2"/><rect x="46" y="166" width="118" height="5" rx="2"/>
-      <rect x="46" y="180" width="70" height="5" rx="2"/>
-    </g>
-    <rect x="40" y="88" width="130" height="48" rx="5" class="accent-soft" opacity="0.75"/>
-    <rect x="40" y="88" width="130" height="48" rx="5" class="accent-stroke" stroke-width="2" stroke-dasharray="6 4"/>
-    <text class="label" x="105" y="234" text-anchor="middle">1. Drag a box</text>
-
-    <path d="M192 112 H258" class="accent-stroke" stroke-width="2" marker-end="url(#arrow)"/>
-
-    <!-- the link -->
-    <rect x="270" y="97" width="118" height="30" rx="15" class="accent-fill"/>
-    <text class="chip" x="329" y="116" text-anchor="middle">soferio://...</text>
-    <text class="sub" x="329" y="146" text-anchor="middle">A link is copied</text>
-
-    <path d="M400 112 H458" class="accent-stroke" stroke-width="2" marker-end="url(#arrow)"/>
-
-    <!-- 2: notes with the link in them -->
-    <rect class="note" x="470" y="40" width="150" height="150" rx="10"/>
-    <text class="sub" x="486" y="62" style="font-weight:600">Your notes</text>
-    <g class="textline">
-      <rect x="486" y="78" width="118" height="5" rx="2"/><rect x="486" y="92" width="100" height="5" rx="2"/>
-      <rect x="486" y="134" width="118" height="5" rx="2"/><rect x="486" y="148" width="84" height="5" rx="2"/>
-      <rect x="486" y="162" width="110" height="5" rx="2"/>
-    </g>
-    <rect x="486" y="110" width="92" height="6" rx="3" class="accent-fill"/>
-    <text class="label" x="545" y="234" text-anchor="middle">2. Paste it anywhere</text>
-
-    <path d="M632 112 H698" class="accent-stroke" stroke-width="2" marker-end="url(#arrow)"/>
-
-    <!-- 3: the page again, with the spot lit up -->
-    <rect class="paper" x="710" y="20" width="150" height="190" rx="6"/>
-    <rect x="720" y="88" width="130" height="48" rx="5" fill="#ff9500" opacity="0.55"/>
-    <g class="textline">
-      <rect x="726" y="40" width="118" height="5" rx="2"/><rect x="726" y="54" width="118" height="5" rx="2"/>
-      <rect x="726" y="68" width="80" height="5" rx="2"/><rect x="726" y="96" width="118" height="5" rx="2"/>
-      <rect x="726" y="110" width="118" height="5" rx="2"/><rect x="726" y="124" width="96" height="5" rx="2"/>
-      <rect x="726" y="152" width="118" height="5" rx="2"/><rect x="726" y="166" width="118" height="5" rx="2"/>
-      <rect x="726" y="180" width="70" height="5" rx="2"/>
-    </g>
-    <text class="label" x="785" y="234" text-anchor="middle">3. Click to come back</text>
-  </svg>
-  </figure>
-
-  <div class="steps">
-    <div class="step"><span class="n">1</span><h3>Drag a box</h3>
-      <p>Choose Get Link and drag a box around any part of a page: a clause, a paragraph, a figure, a signature.</p></div>
-    <div class="step"><span class="n">2</span><h3>Paste the link</h3>
-      <p>The link is on your clipboard. Paste it into your notes, an email, a Word document, or place it inside another PDF.</p></div>
-    <div class="step"><span class="n">3</span><h3>Click to come back</h3>
-      <p>Clicking the link opens the PDF at that page and briefly highlights the spot, so you see it at once.</p></div>
+<section id="demo">
+  <div class="wrap center">
+    <p class="eyebrow">How it works</p>
+    <h2 class="reveal">No more “see page 47, about halfway down”.</h2>
+    <p class="lead reveal">A link that remembers the page and the place on it, and takes you straight back.</p>
   </div>
-</div>
+  <div class="wrap">
+    <div class="demo reveal still" id="demoStage" role="img" aria-label="Animation: a box is drawn around a paragraph of a PDF and a link is copied; the link is pasted into a note and tapped; the PDF opens, scrolls to that paragraph and it flashes orange.">
+      <div class="stage">
+        <div>
+          <p class="pane-caption"><b>1. Get Link</b> Drag a box around any part of a page.</p>
+          <div class="pane">
+            <div class="pane-title"><span class="dots"><i></i><i></i><i></i></span> Lease.pdf</div>
+            <div class="page">
+              <div class="h"></div><div class="l"></div><div class="l s"></div><div class="gap"></div>
+              <div class="l"></div><div class="l"></div><div class="l s"></div><div class="gap"></div>
+              <div class="l"></div><div class="l s"></div>
+              <div class="sel"></div>
+            </div>
+            <div class="cursor"></div>
+            <div class="pill">Link copied</div>
+          </div>
+        </div>
+        <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <div>
+          <p class="pane-caption"><b>2. Paste it anywhere</b> Notes, email, a task, another PDF.</p>
+          <div class="pane">
+            <div class="pane-title"><span class="dots"><i></i><i></i><i></i></span> Notes</div>
+            <div class="note">
+              <p><b>Lease review</b></p>
+              <p class="muted">Check the rent review clause before the meeting:</p>
+              <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Lease.pdf, page 2<span class="tap"></span></span>
+              <p class="muted" style="margin-top:14px">Also ask about the insurance certificate.</p>
+            </div>
+          </div>
+        </div>
+        <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <div>
+          <p class="pane-caption"><b>3. Click to come back</b> It opens at the page, and the spot flashes.</p>
+          <div class="pane">
+            <div class="pane-title"><span class="dots"><i></i><i></i><i></i></span> Lease.pdf</div>
+            <div class="viewport">
+              <div class="scroller">
+                <div class="page"><div class="h"></div><div class="l"></div><div class="l"></div><div class="l s"></div><div class="gap"></div><div class="l"></div><div class="l s"></div><div class="gap"></div><div class="l"></div><div class="l"></div></div>
+                <div class="page" style="position:relative"><div class="l"></div><div class="l"></div><div class="l s"></div><div class="gap"></div><div class="l"></div><div class="l"></div><div class="l s"></div><div class="flash" style="top:66px"></div><div class="gap"></div><div class="l"></div><div class="l s"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="captions" aria-hidden="true">
+        <div><b>1. Get Link</b>Drag a box around any part of a page.</div><span class="sp"></span>
+        <div><b>2. Paste it anywhere</b>Notes, email, a task, another PDF.</div><span class="sp"></span>
+        <div><b>3. Click to come back</b>It opens at the page, and the spot flashes.</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="card step reveal"><h3>Draw a box</h3><p>Choose Get Link and drag around a paragraph, a table, a figure or a single line. The link is copied at once.</p></div>
+      <div class="card step reveal"><h3>Keep it where you work</h3><p>Paste it into your notes, an email, a to-do list or a chat. Or place it inside another PDF, so one document points into the next.</p></div>
+      <div class="card step reveal"><h3>Land right on it</h3><p>Click the link and the PDF opens, scrolls to the page and flashes the area in orange. Back takes you to where you were.</p></div>
+    </div>
+  </div>
 </section>
 
-<section>
-<div class="wrap">
-  <h2>On your iPhone, iPad and Mac</h2>
-  <p class="muted">The same tools on every device: read, highlight, draw, search, and link.</p>
-  <div class="shots">
-    <figure><img src="images/get-link.png" width="644" height="1400" alt="Soferio Reader on iPhone with the Get Link tool on: a hint says to drag a box around the part of the page you want to link to.">
-      <figcaption>Get Link: drag a box around the part you want.</figcaption></figure>
-    <figure><img src="images/highlight.png" width="644" height="1400" alt="Soferio Reader on iPhone with a paragraph highlighted and a choice of highlighter colours.">
-      <figcaption>Highlight and draw, in a choice of colours.</figcaption></figure>
-    <figure><img src="images/opening-screen.png" width="644" height="1400" alt="Soferio Reader's opening screen on iPhone, with buttons to open a PDF from the device or from Google Drive.">
-      <figcaption>Open a PDF from your device or from Google Drive.</figcaption></figure>
-  </div>
-</div>
-</section>
-
-<section>
-<div class="wrap">
-  <div class="two">
-    <div>
-      <h2>Google Drive: one link, every device</h2>
-      <p>Open a PDF from Google Drive and the links you make to it work on all your devices. They keep working when the
-      file is moved to another folder or renamed, because a link identifies the file itself, not where it happens to be.</p>
-      <ul class="plain">
-        <li>You sign in and choose files on Google's own pages.</li>
-        <li>Soferio Reader can open only the files you choose with it. It cannot look through the rest of your Drive.</li>
-        <li>Save sends your highlights and notes back to Google Drive.</li>
+<section id="drive" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap split">
+    <div class="reveal">
+      <p class="eyebrow">Google Drive</p>
+      <h2>One link. Every device.</h2>
+      <p class="lead">Open a PDF from Google Drive and the links you make to it work on your Mac, iPhone and iPad. They keep working when the file is moved or renamed in Drive.</p>
+      <ul class="ticks">
+        <li>Sign in and choose files on Google’s own pages. Soferio Reader sees only the files you pick.</li>
+        <li>Save sends your changes back to Google Drive, and warns you if the file changed elsewhere.</li>
         <li>Copies on your device are removed when the app closes.</li>
+        <li>On iPhone and iPad, links are made to Google Drive files, so they open everywhere.</li>
       </ul>
     </div>
-    <figure class="diagram" role="img" aria-label="A file in Google Drive is moved from one folder to another. The same link still opens it, on a Mac and on a phone.">
-    <svg viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
-      <rect class="note" x="20" y="20" width="380" height="130" rx="12"/>
-      <text class="sub" x="36" y="44" style="font-weight:600">Google Drive</text>
-      <!-- two folders -->
-      <g class="accent-fill" opacity="0.85">
-        <path d="M70 74 h22 l8 8 h30 a6 6 0 0 1 6 6 v34 a6 6 0 0 1 -6 6 h-60 a6 6 0 0 1 -6 -6 v-42 a6 6 0 0 1 6 -6z"/>
-        <path d="M280 74 h22 l8 8 h30 a6 6 0 0 1 6 6 v34 a6 6 0 0 1 -6 6 h-60 a6 6 0 0 1 -6 -6 v-42 a6 6 0 0 1 6 -6z"/>
-      </g>
-      <text class="sub" x="100" y="144" text-anchor="middle">Drafts</text>
-      <text class="sub" x="310" y="144" text-anchor="middle">Final</text>
-      <!-- the file, moved -->
-      <path d="M150 92 C190 62, 240 62, 268 88" class="accent-stroke" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrow2)"/>
-      <defs>
-        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0 0 L10 5 L0 10 z" class="accent-fill"/>
-        </marker>
-      </defs>
-      <rect class="paper" x="298" y="84" width="24" height="32" rx="3"/>
-      <g class="textline"><rect x="302" y="92" width="16" height="2.5"/><rect x="302" y="99" width="16" height="2.5"/><rect x="302" y="106" width="11" height="2.5"/></g>
-      <text class="sub" x="210" y="60" text-anchor="middle">moved or renamed</text>
-
-      <!-- lines down to devices -->
-      <path d="M150 150 L110 196" class="accent-stroke" stroke-width="2" stroke-dasharray="4 5"/>
-      <path d="M270 150 L318 196" class="accent-stroke" stroke-width="2" stroke-dasharray="4 5"/>
-
-      <!-- laptop -->
-      <rect class="device" x="62" y="200" width="96" height="58" rx="5"/>
-      <path class="device" d="M48 264 h124"/>
-      <rect x="78" y="220" width="64" height="18" rx="9" class="accent-fill"/>
-      <text class="chip" x="110" y="233" text-anchor="middle" style="font-size:9px">soferio://</text>
-      <!-- phone -->
-      <rect class="device" x="296" y="196" width="46" height="78" rx="8"/>
-      <rect x="302" y="226" width="34" height="14" rx="7" class="accent-fill"/>
-      <text class="sub" x="210" y="292" text-anchor="middle">The same link still opens it</text>
+    <svg class="diagram reveal" viewBox="0 0 520 380" role="img" aria-label="One link to a Google Drive file opens on a Mac, an iPhone and an iPad.">
+      <rect x="160" y="22" width="200" height="56" rx="28" class="chipbg"/>
+      <text x="260" y="57" text-anchor="middle" fill="#fff" style="font:700 17px var(--sans)">soferio:// link</text>
+      <path class="ln" d="M220 80 C 170 150, 110 170, 100 220"/>
+      <path class="ln" d="M260 80 L 260 220"/>
+      <path class="ln" d="M300 80 C 350 150, 410 170, 425 220"/>
+      <rect x="30" y="232" width="150" height="96" rx="8" class="dev"/><path d="M14 338 h182" class="dev" style="fill:none"/>
+      <text x="105" y="366" text-anchor="middle" class="lbl">Mac</text>
+      <rect x="236" y="226" width="50" height="104" rx="11" class="dev"/>
+      <text x="261" y="366" text-anchor="middle" class="lbl">iPhone</text>
+      <rect x="360" y="230" width="128" height="100" rx="11" class="dev"/>
+      <text x="424" y="366" text-anchor="middle" class="lbl">iPad</text>
+      <rect x="56" y="262" width="98" height="16" rx="4" fill="#ff9f0a" opacity="0.6"/>
+      <rect x="243" y="268" width="36" height="12" rx="3" fill="#ff9f0a" opacity="0.6"/>
+      <rect x="378" y="266" width="92" height="16" rx="4" fill="#ff9f0a" opacity="0.6"/>
     </svg>
-    </figure>
   </div>
-</div>
 </section>
 
 <section>
-<div class="wrap">
-  <h2>What else it does</h2>
-  <div class="features">
-    <div><h3>Links inside PDFs</h3><p>Place a link on a page of a PDF, so one document points to a passage in another. Or turn selected words into a link.</p></div>
-    <div><h3>Image links</h3><p>Copy a picture of part of a page that is also a link back to it. Paste it into Word, Pages or Mail.</p></div>
-    <div><h3>Highlight, draw and erase</h3><p>Mark up pages with a highlighter and a pen. Your marks are saved into the PDF, so other PDF apps show them too.</p></div>
-    <div><h3>Text recognition for scans</h3><p>Turn a scanned document into one you can search and select text in. It is done on your device.</p></div>
-    <div><h3>Find your way around</h3><p>Search, page thumbnails, Go to Page, and Back and Forward that follow you from one document to the next.</p></div>
-    <div><h3>Undo and redo</h3><p>Every change can be undone, and nothing is saved until you choose Save.</p></div>
+  <div class="wrap center">
+    <p class="eyebrow">Made for every screen</p>
+    <h2 class="reveal">At home on iPhone, iPad and Mac.</h2>
+    <p class="lead reveal">The same tools everywhere: read, highlight, draw, search and link.</p>
   </div>
-</div>
+  <div class="wrap">
+    <div class="gallery">
+      <figure class="shot reveal"><img src="images/iphone-1-get-link.jpg" alt="Soferio Reader on iPhone with Get Link on, and a box drawn around the rent clause of a sample lease." width="644" height="1400" loading="lazy"><figcaption>Get Link</figcaption></figure>
+      <figure class="shot reveal"><img src="images/iphone-3-highlight.jpg" alt="Soferio Reader on iPhone highlighting a clause in yellow, with a choice of colours." width="644" height="1400" loading="lazy"><figcaption>Highlight in four colours</figcaption></figure>
+      <figure class="shot reveal"><img src="images/iphone-4-placed-link.jpg" alt="A link placed inside a PDF, labelled See clause 2." width="644" height="1400" loading="lazy"><figcaption>Links inside your PDFs</figcaption></figure>
+      <figure class="shot reveal"><img src="images/iphone-5-opening-screen.jpg" alt="The opening screen, with buttons to open a PDF from the device or from Google Drive." width="644" height="1400" loading="lazy"><figcaption>Local or Google Drive</figcaption></figure>
+    </div>
+    <div class="ipad-row">
+      <figure class="shot reveal"><img src="images/ipad-1-get-link.jpg" alt="Get Link on iPad." width="1200" height="1600" loading="lazy"></figure>
+      <figure class="shot reveal"><img src="images/ipad-2-pages.jpg" alt="iPad with page thumbnails beside the document." width="1200" height="1600" loading="lazy"></figure>
+      <figure class="shot reveal"><img src="images/ipad-4-placed-link.jpg" alt="A highlight and a placed link on iPad." width="1200" height="1600" loading="lazy"></figure>
+    </div>
+  </div>
 </section>
 
-<section>
-<div class="wrap">
-  <div class="two top">
-    <div>
-      <h2>Private by design</h2>
-      <p>Soferio Reader does not collect your information. There are no accounts with us, no advertising, no analytics and
-      no tracking. Your PDFs stay on your device, and, only if you choose, in your own Google Drive.</p>
+<section id="features" style="padding-top:0">
+  <div class="wrap center">
+    <p class="eyebrow">And everything a reader needs</p>
+    <h2 class="reveal">Built for people who live in documents.</h2>
+  </div>
+  <div class="wrap features">
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M14 4l6 6-8 8H6v-6z"/></svg></div><h3>Highlight and draw</h3><p>Four colours for the pen and highlighter, and an eraser. Your marks are saved into the PDF, so other apps show them too.</p></div>
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></div><h3>Search</h3><p>Find every match in a document and step through them, on any device.</p></div>
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 9h8M8 12h8M8 15h5"/></svg></div><h3>Text recognition</h3><p>Turn a scanned document into one you can search and select. It is done on your device.</p></div>
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><h3>Links inside PDFs</h3><p>Place a link in one PDF that opens another at the right spot, or make an image link to paste into Word or Pages.</p></div>
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></div><h3>Back and Forward</h3><p>Follow a chain of links, then step back through every place you visited, even into the file you started in.</p></div>
+    <div class="card reveal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></svg></div><h3>Menus and shortcuts</h3><p>Every tool is in a menu with a keyboard shortcut, on the Mac and on an iPad with a keyboard.</p></div>
+  </div>
+</section>
+
+<section id="pricing" style="padding-top:0">
+  <div class="wrap duo">
+    <div class="card dark-card reveal">
+      <p class="eyebrow" style="color:#8fb6ff">Private by design</p>
+      <h2 style="font-size:clamp(26px,3vw,34px)">Your documents stay yours.</h2>
+      <p>No account with us, no advertising, no analytics and no tracking. Your PDFs stay on your device and, only if you choose, in your own Google Drive.</p>
       <p><a href="https://soferio.github.io/soferio-reader-privacy-policy.html">Read the privacy policy</a></p>
     </div>
-    <div>
-      <h2>Free and Pro</h2>
-      <p>Soferio Reader is free for documents of up to 100 pages. A Pro subscription, bought through the App Store,
-      removes the limit. One subscription covers your Mac, iPhone and iPad.</p>
+    <div class="card reveal">
+      <p class="eyebrow">Free and Pro</p>
+      <h2 style="font-size:clamp(26px,3vw,34px)">Start free. Go Pro when you need it.</h2>
+      <p>Soferio Reader is free for documents of up to 100 pages. Soferio Reader Pro removes the limit.</p>
+      <div class="price">
+        <div><b>Free</b><span>Documents up to 100 pages</span></div>
+        <div><b>Pro</b><span>Monthly or yearly, one subscription for Mac, iPhone and iPad</span></div>
+      </div>
     </div>
   </div>
-</div>
 </section>
 
+</main>
+
 <footer>
-<div class="wrap">
-  <p>Soferio Reader is made by Soferio Pty Ltd.</p>
-  <p>
-    <a href="https://soferio.github.io/soferio-reader-privacy-policy.html">Privacy Policy</a>
-    <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
-    <a href="mailto:info@soferio.com">info@soferio.com</a>
-  </p>
-</div>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="images/app-icon.png" alt="" width="30" height="30"><span>Soferio <b>Reader</b></span></a>
+    <nav aria-label="Legal">
+      <a href="https://soferio.github.io/soferio-reader-privacy-policy.html">Privacy Policy</a>
+      <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
+      <a href="mailto:info@soferio.com">info@soferio.com</a>
+    </nav>
+    <span>© Soferio Pty Ltd</span>
+  </div>
 </footer>
 
+<script>
+  (function () {
+    var root = document.documentElement;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root.classList.add("js");
+
+    // The demo plays only when motion is welcome; otherwise it stays on its still frame.
+    if (!reduce) {
+      var stage = document.getElementById("demoStage");
+      if (stage) { stage.classList.remove("still"); stage.classList.add("anim"); }
+      var drive = document.querySelector(".diagram");
+      if (drive) { drive.parentElement.classList.add("anim"); }
+    }
+
+    // Sections fade in as they come into view.
+    var items = document.querySelectorAll(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) {
+      items.forEach(function (el) { el.classList.add("in"); });
+      return;
+    }
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add("in"); seen.unobserve(entry.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    items.forEach(function (el) { seen.observe(el); });
+  })();
+</script>
 </body>
 </html>
