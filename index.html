@@ -1,9 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-AU">
 <head>
-    <title>Soferio Pty Ltd</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soferio | Australian software</title>
+  <meta name="description" content="Soferio Pty Limited is an Australian software company. Our products include Soferio Reader, a PDF reader that links to the exact spot in a document, and SenGram, a grammar game for iPhone and iPad.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --ink: #141a33;
+      --muted: #5a6382;
+      --line: #e6e9f2;
+      --bg: #fbfcff;
+      --blue: #4f7cff;
+      --teal: #14b8a6;
+      --violet: #8b5cf6;
+      --orange: #ff8a4c;
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(251, 252, 255, 0.8);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; text-decoration: none; letter-spacing: -0.01em; }
+    .brand img { width: 34px; height: 34px; }
+    .nav ul { list-style: none; display: flex; gap: 28px; margin: 0; padding: 0; }
+    .nav ul a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 0.95rem; }
+    .nav ul a:hover { color: var(--ink); }
+
+    /* Hero */
+    .hero { position: relative; overflow: hidden; padding: 110px 0 90px; text-align: center; }
+    .hero::before {
+      content: ""; position: absolute; inset: -40% -10% auto -10%; height: 140%;
+      background:
+        radial-gradient(40% 40% at 25% 35%, rgba(79,124,255,.18), transparent 70%),
+        radial-gradient(35% 35% at 75% 30%, rgba(20,184,166,.16), transparent 70%),
+        radial-gradient(30% 30% at 55% 70%, rgba(139,92,246,.12), transparent 70%);
+      z-index: -1;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: #fff; border: 1px solid var(--line);
+      font-size: 0.85rem; font-weight: 600; color: var(--muted);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 4rem); line-height: 1.08; letter-spacing: -0.035em;
+      margin: 22px auto 18px; max-width: 820px;
+    }
+    .grad { background: linear-gradient(90deg, var(--blue), var(--teal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p { font-size: 1.2rem; color: var(--muted); max-width: 640px; margin: 0 auto 34px; }
+    .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 24px; border-radius: 14px;
+      font-weight: 700; font-size: 1rem; text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--ink); color: #fff; box-shadow: 0 10px 24px rgba(20,26,51,.2); }
+    .btn-ghost { background: #fff; border: 1px solid var(--line); }
+    .btn-blue { background: var(--blue); color: #fff; box-shadow: 0 10px 24px rgba(79,124,255,.3); }
+    .btn-store { background: #000; color: #fff; padding: 10px 20px; box-shadow: 0 10px 24px rgba(0,0,0,.2); }
+    .btn-store svg { width: 26px; height: 26px; }
+    .btn-store span { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+    .btn-store small { font-weight: 500; font-size: 0.72rem; opacity: .85; }
+    .btn-store strong { font-size: 1.15rem; }
+
+    /* Products */
+    section.product { padding: 90px 0; }
+    section.product + section.product { border-top: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center; }
+    .grid.flip .media { order: 2; }
+    .media img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+    .tag {
+      display: inline-block; font-size: 0.8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 14px;
+    }
+    .tag.blue { background: #e8eeff; color: #2f56d6; }
+    .note { margin: -12px 0 26px; font-size: .95rem; color: var(--muted); }
+    .tag.violet { background: #f1e9ff; color: #6d3fd6; }
+    .product h2 { font-size: clamp(2rem, 3.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 16px; }
+    .product .lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 22px; }
+    .features { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 12px; }
+    .features li { display: flex; gap: 12px; align-items: flex-start; }
+    .features li::before {
+      content: ""; flex: none; width: 22px; height: 22px; margin-top: 2px; border-radius: 7px;
+      background: var(--dot) center/14px no-repeat, var(--dotbg);
+    }
+    .reader .features li { --dotbg: #e8eeff; --dot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='%234f7cff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+    .sengram .features li { --dotbg: #f1e9ff; --dot: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='%238b5cf6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+
+    /* About strip */
+    .about { padding: 80px 0; }
+    .about-card {
+      background: linear-gradient(135deg, #141a33, #24305e);
+      color: #fff; border-radius: 28px; padding: 56px;
+      display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center;
+    }
+    .about-card h2 { margin: 0 0 12px; font-size: 2rem; letter-spacing: -0.02em; }
+    .about-card p { margin: 0; color: #c7cde4; font-size: 1.05rem; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .stat { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 18px; padding: 20px; }
+    .stat strong { display: block; font-size: 1.6rem; }
+    .stat span { color: #aab3d4; font-size: .9rem; }
+
+    footer { border-top: 1px solid var(--line); padding: 34px 0 44px; color: var(--muted); font-size: .92rem; }
+    .foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .foot nav { display: flex; gap: 22px; }
+    .foot a { text-decoration: none; }
+    .foot a:hover { color: var(--ink); }
+
+    @media (max-width: 860px) {
+      .grid, .about-card { grid-template-columns: 1fr; gap: 36px; }
+      .grid.flip .media { order: 0; }
+      .about-card { padding: 36px 28px; }
+      .nav ul { display: none; }
+      .hero { padding: 80px 0 60px; }
+      section.product { padding: 64px 0; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to my website!</h1>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top"><img src="logo.svg" alt="">Soferio</a>
+      <ul>
+        <li><a href="#reader">Soferio Reader</a></li>
+        <li><a href="#sengram">SenGram</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <span class="eyebrow">🇦🇺 Proudly made in Australia</span>
+        <h1>Thoughtful software for <span class="grad">reading and learning</span></h1>
+        <p>Soferio Pty Limited is an Australian software company building focused, well-crafted apps that help people work with documents and master language.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#reader">Explore Soferio Reader</a>
+          <a class="btn btn-ghost" href="#sengram">Discover SenGram</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="product reader" id="reader">
+      <div class="wrap grid">
+        <div class="media">
+          <img src="reader.svg" alt="Illustration of Soferio Reader linking a selected passage in a PDF to a note" width="560" height="400">
+        </div>
+        <div>
+          <span class="tag blue">Soferio Reader · Mac, iPhone and iPad</span>
+          <h2>Link to the exact spot in a PDF.</h2>
+          <p class="lead">No more “see page 47, about halfway down”. With Soferio Reader, draw a box around a paragraph, table or figure and get a link to that exact spot. Paste it into your notes, an email, a task or another PDF. Click it later and the PDF opens right there, with the spot flashing so you can’t miss it.</p>
+          <ul class="features">
+            <li><span><strong>Get Link, paste, click.</strong> Three simple steps from any page to the exact passage you need.</span></li>
+            <li><span><strong>One link, every device.</strong> With Google Drive, links keep working even when files are moved or renamed.</span></li>
+            <li><span><strong>Built for people who live in documents.</strong> Highlighting and drawing, search, on-device text recognition for scans, and links between PDFs.</span></li>
+            <li><span><strong>Private by design.</strong> No account, no ads, no tracking. Your files stay on your device or in your own Google Drive.</span></li>
+          </ul>
+          <p class="note">Start free with documents up to 50 pages, or go Pro for no limits with one subscription across Mac, iPhone and iPad.</p>
+          <a class="btn btn-blue" href="https://soferio.github.io/reader">Learn more about Soferio Reader &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="product sengram" id="sengram">
+      <div class="wrap grid flip">
+        <div class="media">
+          <img src="sengram.svg" alt="Illustration of a SenGram sentence diagram puzzle on a tablet" width="560" height="400">
+        </div>
+        <div>
+          <span class="tag violet">Grammar game</span>
+          <h2>SenGram</h2>
+          <p class="lead">Grammar, made into a game. SenGram challenges you to solve sentence diagram puzzles on iPhone and iPad, turning the structure of English into something you can see, move and understand.</p>
+          <ul class="features">
+            <li>Drag words into place to build sentence diagrams</li>
+            <li>Progress through levels, from simple subjects and verbs to challenge puzzles</li>
+            <li>Great for students, teachers, ESL learners and lovers of language</li>
+          </ul>
+          <a class="btn btn-store" href="https://apps.apple.com/app/id512943810" aria-label="Download SenGram on the App Store">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.68c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-2.99-.79-1.54.02-2.96.9-3.75 2.27-1.6 2.78-.41 6.89 1.15 9.14.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.24-.02 2.02-1.12 2.77-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.39-.92-2.41-3.66zM14.1 5.93c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg>
+            <span><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="wrap">
+        <div class="about-card">
+          <div>
+            <h2>About Soferio</h2>
+            <p>Soferio Pty Limited is an independent Australian software company. We believe good software should be simple, reliable and a pleasure to use, whether you’re reviewing a document or learning how a sentence fits together.</p>
+          </div>
+          <div class="stats">
+            <div class="stat"><strong>2</strong><span>Products</span></div>
+            <div class="stat"><strong>AU</strong><span>Australian owned</span></div>
+            <div class="stat"><strong>PDF</strong><span>Soferio Reader for Mac, iPhone and iPad</span></div>
+            <div class="stat"><strong>iOS</strong><span>SenGram for iPhone and iPad</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div>&copy; <span id="yr">2026</span> Soferio Pty Limited. All rights reserved.</div>
+      <nav>
+        <a href="https://soferio.github.io/reader">Soferio Reader</a>
+        <a href="https://apps.apple.com/app/id512943810">SenGram</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>document.getElementById("yr").textContent = new Date().getFullYear();</script>
 </body>
 </html>
